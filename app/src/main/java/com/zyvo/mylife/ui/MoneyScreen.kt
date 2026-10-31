@@ -149,7 +149,7 @@ fun MoneyScreen(store: AppStore) {
         BudgetDialog(
             budget = store.budget,
             onDismiss = { showBudget = false },
-            onSave = { store.setBudget(it) }
+            onSave = { store.updateBudget(it) }
         )
     }
     deleteTx?.let { x ->
