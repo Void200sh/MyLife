@@ -356,26 +356,20 @@
           </div>
         </div>
 
-        <div class="focus" style="margin-top:16px">
-          <div class="ring">
-            <svg width="104" height="104" viewBox="0 0 104 104">
-              <circle cx="52" cy="52" r="46" stroke="#F0E8DB" stroke-width="9" fill="none"/>
-              <circle id="prog" cx="52" cy="52" r="46" stroke="#5E8B6A" stroke-width="9" fill="none"
-                      stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="0"/>
-            </svg>
-            <div class="mid">
-              <div class="time" id="clock">25:00</div>
-              <div class="mode" id="mode">Fokus</div>
-            </div>
+        <div class="focus timerbig" style="margin-top:16px">
+          <div class="tbig">
+            <div class="tmode" id="mode">Fokus</div>
+            <div class="tclock" id="clock">25:00</div>
+            <div class="tline"><i id="progLine" style="width:0%"></i></div>
+            <div class="ttask" id="focusTask">Belum ada tugas dipilih</div>
           </div>
-          <div class="info">
-            <h3>Pomodoro</h3>
-            <p>Belajar fokus 25 menit, istirahat 5 menit.</p>
-            <div class="btns">
-              <button class="btn primary" id="start">Mulai</button>
-              <button class="btn ghost" id="reset">Reset</button>
-            </div>
+          <div class="timerbtns">
+            <button class="btn primary" id="start">Mulai</button>
+            <button class="btn ghost" id="pickTask">Ambil tugas</button>
+            <button class="btn ghost" id="checkout">Check-out</button>
+            <button class="btn ghost" id="reset">Reset</button>
           </div>
+          <div class="tflow">1. Ambil tugas &nbsp;·&nbsp; 2. Mulai timer &nbsp;·&nbsp; 3. Check-out untuk simpan sesi</div>
         </div>
 
         <div class="sec"><h2>Mata pelajaran</h2><span style="font-size:12px;font-weight:700;color:var(--ink-2)">ketuk untuk catat jam</span></div>
@@ -434,7 +428,7 @@
         <div class="stats">
           <div class="stat"><small>Habit</small><b><span id="statHabit">0</span><em>%</em></b></div>
           <div class="stat"><small>Fokus</small><b><span id="statFocus">0</span><em> jam</em></b></div>
-          <div class="stat"><small>Olahraga</small><b><span id="statExercise">0</span><em> / 7 hari</em></b></div>
+          <div class="stat"><small>Olahraga</small><b><span id="statExercise">0</span><em id="exTargetUnit"> / 7 hari</em></b></div>
           <div class="stat"><small>Belajar</small><b><span id="statStudy">0</span><em> jam</em></b></div>
         </div>
 
@@ -445,10 +439,19 @@
           <span class="chev">›</span>
         </div>
 
-        <div class="sec"><h2>Olahraga</h2></div>
+        <div class="sec"><h2>Olahraga</h2><button class="minilink" id="openExercise">Atur</button></div>
         <div class="excard">
           <div class="exhead"><b id="exSummary2">0 / 7 hari aktif</b><small id="exStreak2">🔥 0 hari</small></div>
           <div class="bars" id="progBars"></div>
+        </div>
+
+        <div class="sec"><h2>Riwayat</h2><a id="clearHistory">Bersihkan</a></div>
+        <div id="historyList"></div>
+
+        <div class="sec"><h2>Alur cepat</h2></div>
+        <div class="budget" id="guideCard">
+          <div class="top"><span>3 langkah</span><b>mulai dari sini</b></div>
+          <div class="guide">1. Tambah kebiasaan &amp; tugas di tab Tugas.<br>2. Buka Belajar → Ambil tugas → Mulai timer.<br>3. Check-out untuk menyimpan sesi ke Riwayat.</div>
         </div>
 
         <div class="quote">
@@ -488,6 +491,16 @@
         <button class="btn danger full" id="sheetDelete" style="display:none">Hapus</button>
       </div>
     </div>
+    <div class="confirmwrap" id="confirmWrap">
+      <div class="confirmbox">
+        <h3 id="confirmTitle">Konfirmasi</h3>
+        <p id="confirmText"></p>
+        <div class="confirmbtns">
+          <button class="btn ghost" id="confirmNo">Batal</button>
+          <button class="btn primary" id="confirmYes">Ya, lanjut</button>
+        </div>
+      </div>
+    </div>
     <div class="toast" id="toast"></div>
 
   </div>
@@ -497,7 +510,7 @@
 /* ============ helpers ============ */
 const $  = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-const KEY = "mylife_v1";
+const KEY = "mylife_v2";
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 const DAYS = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
 const keyOf = d => {
@@ -552,59 +565,62 @@ applyTheme(THEME);
 
 /* ============ state ============ */
 function seed(){
-  const t = new Date(), k = n => keyOf(addDays(t,n));
-  const h = (id,name,emoji,exercise,days) => {
-    const log = {}; days.forEach(n => log[k(n)] = exercise ? 30 : 1);
-    return {id,name,emoji,exercise,log};
-  };
   return {
-    habits:[
-      h("h1","Bangun jam 6 pagi","🌅",false,[-1,-2,-3]),
-      h("h2","Minum 8 gelas air","💧",false,[-1,-2,-3,-4,-5]),
-      h("h3","Baca buku 20 menit","📖",false,[-2]),
-      h("h4","Olahraga 30 menit","🏃",true,[-1,-2,-3,0])
-    ],
-    tasks:[
-      {id:uid(),title:"Kerjakan PR Matematika",priority:"high",cat:"Belajar",due:"Hari ini · 19:00",done:false},
-      {id:uid(),title:"Ulangi materi Bahasa Inggris",priority:"mid",cat:"Belajar",due:"Hari ini · 20:00",done:false},
-      {id:uid(),title:"Beli kebutuhan bulanan",priority:"low",cat:"Umum",due:"Sabtu",done:false},
-      {id:uid(),title:"Jemur kasur pagi",priority:"low",cat:"Umum",due:"Selesai",done:true}
-    ],
-    subjects:[
-      {id:uid(),name:"Matematika",color:"#5E8B6A",target:6,done:4},
-      {id:uid(),name:"Bahasa Inggris",color:"#5B7FA6",target:5,done:2},
-      {id:uid(),name:"Fisika",color:"#E8A13C",target:4,done:3},
-      {id:uid(),name:"Baca buku",color:"#9B7BB8",target:3,done:0}
-    ],
-    txs:[
-      {id:uid(),title:"Uang saku",amount:500000,type:"in",emoji:"💰",date:Date.now()-86400000*3},
-      {id:uid(),title:"Makan siang",amount:25000,type:"out",emoji:"🍜",date:Date.now()-3600000},
-      {id:uid(),title:"Transport",amount:12000,type:"out",emoji:"🛵",date:Date.now()-7200000},
-      {id:uid(),title:"Buku tulis",amount:18000,type:"out",emoji:"📚",date:Date.now()-86400000*2}
-    ],
-    goals:[
-      {id:uid(),title:"Baca 12 buku",current:5,target:12,unit:"buku",color:"#5E8B6A"},
-      {id:uid(),title:"Lari 100 km",current:34,target:100,unit:"km",color:"#E8A13C"},
-      {id:uid(),title:"Belajar 40 jam",current:9,target:40,unit:"jam",color:"#5B7FA6"}
-    ],
-    moods:{},
-    budget:2000000,
-    focus:{},
+    habits:[], tasks:[], subjects:[], txs:[], goals:[],
+    moods:{}, budget:0, focus:{}, history:[],
+    selectedTaskId:null,
+    exerciseTarget:4, exerciseMinutes:30,
     quote:"Konsistensi kecil yang rutin mengalahkan semangat besar yang sebentar."
   };
 }
 let S;
 try { S = JSON.parse(localStorage.getItem(KEY)); } catch(e){ S = null; }
 if(!S || !S.habits){ S = seed(); save(); }
-if(S.budget === undefined) S.budget = 2000000;
+if(S.budget === undefined) S.budget = 0;
 if(!S.focus) S.focus = {};
 if(!S.moods) S.moods = {};
+if(!S.history) S.history = [];
+if(!S.tasks) S.tasks = [];
+if(!S.subjects) S.subjects = [];
+if(!S.txs) S.txs = [];
+if(!S.goals) S.goals = [];
+if(S.exerciseTarget === undefined) S.exerciseTarget = 4;
+if(S.exerciseMinutes === undefined) S.exerciseMinutes = 30;
+if(S.selectedTaskId === undefined) S.selectedTaskId = null;
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
 function toast(msg){
   const t = $("#toast"); t.textContent = msg; t.classList.add("show");
   clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove("show"), 1600);
 }
+
+function logHistory(type, title, detail){
+  if(!S.history) S.history = [];
+  S.history.unshift({id:uid(), type, title, detail: detail || "", at: Date.now()});
+  if(S.history.length > 200) S.history.length = 200;
+  save();
+}
+
+let confirmAction = null;
+function askConfirm(title, text, onYes){
+  confirmAction = onYes;
+  $("#confirmTitle").textContent = title;
+  $("#confirmText").textContent = text || "";
+  $("#confirmWrap").classList.add("show");
+}
+function closeConfirm(){
+  $("#confirmWrap").classList.remove("show");
+  confirmAction = null;
+}
+$("#confirmNo").onclick = closeConfirm;
+$("#confirmYes").onclick = ()=>{
+  const fn = confirmAction;
+  closeConfirm();
+  if(fn) fn();
+};
+$("#confirmWrap").addEventListener("click", e=>{
+  if(e.target.id === "confirmWrap") closeConfirm();
+});
 
 /* ============ derivations ============ */
 const isDone = (h, k = todayKey()) => !!h.log[k];
@@ -646,6 +662,7 @@ function monthTxs(){
 /* ============ render ============ */
 function render(){
   renderHome(); renderTasks(); renderStudy(); renderMoney(); renderProgress();
+  paintFocusTask();
   save();
 }
 
@@ -663,7 +680,8 @@ function renderHome(){
     `<div class="empty">Semua tugas beres. Tambah dari tab Tugas ✨</div>`;
 
   const ex = exerciseSummary();
-  $("#exSummary").textContent = ex.days + " / 7 hari aktif";
+  const exTargetHome = S.exerciseTarget || 7;
+  $("#exSummary").textContent = ex.days + " / " + exTargetHome + " hari aktif";
   $("#exStreak").textContent = "🔥 " + ex.streak + " hari";
   $("#homeBars").innerHTML = barsHTML();
 
@@ -798,9 +816,12 @@ function renderProgress(){
   $("#statExercise").textContent = ex.days;
   $("#statStudy").textContent = S.subjects.reduce((a,s)=>a+s.done,0);
 
-  $("#exSummary2").textContent = ex.days + " / 7 hari aktif";
+  const exTarget = S.exerciseTarget || 7;
+  $("#exSummary2").textContent = ex.days + " / " + exTarget + " hari aktif";
   $("#exStreak2").textContent = "🔥 " + ex.streak + " hari";
+  $("#exTargetUnit").textContent = " / " + exTarget + " hari";
   $("#progBars").innerHTML = barsHTML();
+  renderHistory();
 
   const totalTasks = S.tasks.length;
   const doneTasks = S.tasks.filter(t=>t.done).length;
@@ -810,12 +831,25 @@ function renderProgress(){
 }
 
 function barsHTML(){
-  const maxMin = Math.max(60, ...last7().map(x=>exerciseMinutes(x.k)));
+  const maxMin = Math.max((S.exerciseMinutes||30)*2, ...last7().map(x=>exerciseMinutes(x.k)));
   return last7().map(x=>{
     const min = exerciseMinutes(x.k);
     const h = min>0 ? Math.max(10, Math.round(min/maxMin*48)) : 8;
     return `<div class="bar ${min>0?"on":""}"><i style="height:${h}px"></i><span>${x.label}</span></div>`;
   }).join("");
+}
+
+function renderHistory(){
+  const list = (S.history || []).slice(0, 20);
+  $("#historyList").innerHTML = list.length ? list.map(h=>{
+    const d = new Date(h.at);
+    const when = keyOf(d) === todayKey()
+      ? "Hari ini " + String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0")
+      : d.getDate() + "/" + (d.getMonth()+1);
+    return `<div class="histrow"><span class="hdot ${h.type}"></span>
+      <div class="grow"><b>${esc(h.title)}</b><small>${esc(h.detail||"")}</small></div>
+      <span class="when">${when}</span></div>`;
+  }).join("") : `<div class="empty">Belum ada riwayat. Aktivitas akan muncul di sini.</div>`;
 }
 
 /* ============ tabs ============ */
@@ -876,7 +910,7 @@ function sheetConfig(type, id){
       title: h ? "Edit kebiasaan" : "Kebiasaan baru",
       html: field("Nama kebiasaan", inp("f_name","cth: Minum air 8 gelas", h?h.name:""))
           + field("Emoji", picks("f_emoji", EMOJIS.map(e=>({v:e,t:e})), h?h.emoji:"🌅"))
-          + field("Tipe", picks("f_exercise", [{v:"0",t:"Biasa"},{v:"1",t:"Olahraga (+30 menit)"}], h&&h.exercise?"1":"0"))
+          + field("Tipe", picks("f_exercise", [{v:"0",t:"Biasa"},{v:"1",t:"Olahraga (+"+(S.exerciseMinutes||30)+" menit)"}], h&&h.exercise?"1":"0"))
     };
   }
   if(type==="task"){
@@ -933,6 +967,29 @@ function sheetConfig(type, id){
       saveText: "Simpan budget"
     };
   }
+  if(type==="exercise"){
+    return {
+      title:"Pengaturan olahraga",
+      html: field("Target hari per minggu", inp("f_extarget","4", S.exerciseTarget||4, "number"))
+          + field("Menit per sesi", inp("f_exmin","30", S.exerciseMinutes||30, "number"))
+          + `<div class="field"><label>Catatan</label><div class="hint">Centang kebiasaan bertipe <b>Olahraga</b> di Beranda untuk mencatat menit.</div></div>`,
+      saveText:"Simpan"
+    };
+  }
+  if(type==="picktask"){
+    const active = S.tasks.filter(t=>!t.done);
+    return {
+      title:"Ambil tugas fokus",
+      html: active.length ? `<div class="taskpick">` + active.map(t=>
+          `<button type="button" class="taskpickrow ${S.selectedTaskId===t.id?"on":""}" data-pick-task="${t.id}">
+             <span class="grow"><b>${esc(t.title)}</b><small>${esc(t.cat||"Umum")}${t.due?" · "+esc(t.due):""}</small></span>
+             <span class="pickdot"></span>
+           </button>`).join("") + `</div>`
+          + `<button type="button" class="btn ghost full" style="margin-top:10px" data-pick-task="">Tanpa tugas</button>`
+        : `<div class="empty">Belum ada tugas aktif. Tambahkan dulu di tab Tugas.</div>`,
+      saveText:"Tutup"
+    };
+  }
   if(type==="theme"){
     return {
       title:"Tema tampilan",
@@ -965,6 +1022,15 @@ function bindSheetPicks(){
       $$("#sheetBody [data-theme-pick]").forEach(x=>x.classList.toggle("on", x===el));
     };
   });
+  $$("#sheetBody [data-pick-task]").forEach(el=>{
+    el.onclick = ()=>{
+      S.selectedTaskId = el.dataset.pickTask || null;
+      save();
+      paintFocusTask();
+      closeSheet();
+      toast(S.selectedTaskId ? "Tugas fokus dipilih" : "Tugas fokus dilepas");
+    };
+  });
 }
 const pickVal = id => {
   const g = document.querySelector(`#sheetBody [data-pickgroup="${id}"] .on`);
@@ -972,7 +1038,7 @@ const pickVal = id => {
 };
 
 $("#sheetSave").onclick = ()=>{
-  if(sheetType==="theme"){ closeSheet(); return; }
+  if(sheetType==="theme" || sheetType==="picktask"){ closeSheet(); return; }
   const v = id => { const el = document.getElementById(id); return el ? el.value.trim() : ""; };
   const num = id => { const x = parseFloat(v(id)); return isNaN(x) ? 0 : x; };
 
@@ -1031,18 +1097,27 @@ $("#sheetSave").onclick = ()=>{
     S.budget = Math.max(0, num("f_budget"));
     toast("Budget disimpan");
   }
+  else if(sheetType==="exercise"){
+    S.exerciseTarget = Math.max(1, Math.min(7, Math.round(num("f_extarget")) || 4));
+    S.exerciseMinutes = Math.max(5, Math.round(num("f_exmin")) || 30);
+    toast("Pengaturan olahraga disimpan");
+  }
   closeSheet(); render();
 };
 
 $("#sheetDelete").onclick = ()=>{
   if(!sheetId) return;
-  if(sheetType==="habit")   S.habits = S.habits.filter(h=>h.id!==sheetId);
-  if(sheetType==="task")    S.tasks = S.tasks.filter(t=>t.id!==sheetId);
-  if(sheetType==="subject") S.subjects = S.subjects.filter(s=>s.id!==sheetId);
-  if(sheetType==="tx")      S.txs = S.txs.filter(t=>t.id!==sheetId);
-  if(sheetType==="goal")    S.goals = S.goals.filter(g=>g.id!==sheetId);
-  closeSheet(); render();
-  toast("Dihapus");
+  const type = sheetType, id = sheetId;
+  askConfirm("Hapus data?", "Data yang dihapus tidak bisa dikembalikan.", ()=>{
+    if(type==="habit")   S.habits = S.habits.filter(h=>h.id!==id);
+    if(type==="task")    S.tasks = S.tasks.filter(t=>t.id!==id);
+    if(type==="subject") S.subjects = S.subjects.filter(s=>s.id!==id);
+    if(type==="tx")      S.txs = S.txs.filter(t=>t.id!==id);
+    if(type==="goal")    S.goals = S.goals.filter(g=>g.id!==id);
+    if(S.selectedTaskId === id) S.selectedTaskId = null;
+    closeSheet(); render();
+    toast("Dihapus");
+  });
 };
 
 /* ============ add buttons ============ */
@@ -1053,6 +1128,10 @@ $("#addGoal").onclick = ()=>openSheet("goal");
 $("#budgetCard").onclick = ()=>openSheet("budget");
 $("#openTheme").onclick = ()=>openSheet("theme");
 $("#openTheme2").onclick = ()=>openSheet("theme");
+$("#openExercise").onclick = ()=>openSheet("exercise");
+$("#clearHistory").onclick = ()=>askConfirm("Bersihkan riwayat?", "Semua riwayat aktivitas akan dihapus.", ()=>{
+  S.history = []; save(); renderProgress(); toast("Riwayat dibersihkan");
+});
 
 /* ============ delegated clicks ============ */
 document.addEventListener("click", (e)=>{
@@ -1061,18 +1140,41 @@ document.addEventListener("click", (e)=>{
 
   if(el.dataset.toggleHabit){
     const h = S.habits.find(x=>x.id===el.dataset.toggleHabit);
+    if(!h) return;
     const k = todayKey();
-    if(h.log[k]) delete h.log[k];
-    else h.log[k] = h.exercise ? 30 : 1;
-    if(!h.log[k]) toast("Dibatalkan");
-    else toast(h.exercise ? "Olahraga dicatat 30 menit 💪" : "Mantap, +1 hari 🔥");
+    if(h.log[k]){
+      delete h.log[k];
+      toast("Dibatalkan");
+    } else {
+      const mins = S.exerciseMinutes || 30;
+      h.log[k] = h.exercise ? mins : 1;
+      if(h.exercise){
+        logHistory("exercise","Olahraga", h.name + " · " + mins + " menit");
+        toast("Olahraga dicatat " + mins + " menit 💪");
+      } else {
+        logHistory("habit","Kebiasaan", h.name);
+        toast("Mantap, +1 hari 🔥");
+      }
+    }
     render();
   }
   else if(el.dataset.toggleTask){
     const t = S.tasks.find(x=>x.id===el.dataset.toggleTask);
-    t.done = !t.done;
-    toast(t.done ? "Tugas selesai ✅" : "Dibuka lagi");
-    render();
+    if(!t) return;
+    if(t.done){
+      askConfirm("Buka tugas lagi?", '"' + t.title + '" akan ditandai belum selesai.', ()=>{
+        t.done = false;
+        toast("Tugas dibuka lagi");
+        render();
+      });
+    } else {
+      askConfirm("Selesaikan tugas?", '"' + t.title + '" akan ditandai selesai.', ()=>{
+        t.done = true;
+        logHistory("task","Tugas selesai", t.title);
+        toast("Tugas selesai ✅");
+        render();
+      });
+    }
   }
   else if(el.dataset.editHabit)   openSheet("habit", el.dataset.editHabit);
   else if(el.dataset.editTask)    openSheet("task", el.dataset.editTask);
@@ -1108,41 +1210,84 @@ $$("#taskFilters .chip").forEach(ch=>{
   };
 });
 
+/* ============ focus task ============ */
+function selectedTask(){
+  return S.tasks.find(t=>t.id===S.selectedTaskId && !t.done) || null;
+}
+function paintFocusTask(){
+  const t = selectedTask();
+  if(!t) S.selectedTaskId = null;
+  const el = $("#focusTask");
+  if(el) el.textContent = t ? "🎯 " + t.title : "Belum ada tugas dipilih";
+}
+
 /* ============ pomodoro ============ */
 const FOCUS=25*60, BREAK=5*60;
-let left=FOCUS, mode="focus", tick=null;
-const clock=$("#clock"), modeEl=$("#mode"), prog=$("#prog"), CIRC=289;
+let left=FOCUS, mode="focus", tick=null, sessionSeconds=0;
+const clock=$("#clock"), modeEl=$("#mode"), progLine=$("#progLine");
 function paint(){
   clock.textContent = String(Math.floor(left/60)).padStart(2,"0") + ":" + String(left%60).padStart(2,"0");
   const total = mode==="focus" ? FOCUS : BREAK;
-  prog.style.strokeDashoffset = CIRC*(1-left/total);
+  progLine.style.width = Math.round((1-left/total)*100) + "%";
+  modeEl.textContent = mode==="focus" ? "Fokus" : "Istirahat";
+}
+function resetTimer(silent){
+  clearInterval(tick); tick=null;
+  mode="focus"; left=FOCUS; sessionSeconds=0;
+  paint(); paintFocusTask();
+  if(!silent) toast("Timer di-reset");
+}
+function logFocus(minutes){
+  const m = Math.max(1, Math.round(minutes));
+  const k = todayKey();
+  S.focus[k] = (S.focus[k]||0) + m;
+  const t = selectedTask();
+  logHistory("focus","Sesi fokus", m + " menit" + (t ? " · " + t.title : ""));
+  save(); renderProgress();
+  return m;
 }
 $("#start").onclick = ()=>{
   if(tick) return;
   tick = setInterval(()=>{
     left--;
+    if(mode==="focus") sessionSeconds++;
     if(left<=0){
       clearInterval(tick); tick=null;
       if(mode==="focus"){
-        const k = todayKey();
-        S.focus[k] = (S.focus[k]||0) + 25;
-        save(); renderProgress();
-        mode="break"; left=BREAK; modeEl.textContent="Istirahat";
-        toast("Sesi fokus selesai! +25 menit ⏱");
+        const m = logFocus(25);
+        toast("Sesi fokus selesai! +" + m + " menit ⏱");
+        mode="break"; left=BREAK; sessionSeconds=0;
       } else {
-        mode="focus"; left=FOCUS; modeEl.textContent="Fokus";
+        mode="focus"; left=FOCUS;
         toast("Istirahat selesai, lanjut fokus 💪");
       }
     }
     paint();
   },1000);
+  toast("Timer berjalan. Kamu bisa ambil tugas kapan saja.");
 };
 $("#reset").onclick = ()=>{
-  clearInterval(tick); tick=null;
-  left = mode==="focus" ? FOCUS : BREAK; paint();
-  toast("Timer di-reset");
+  if(sessionSeconds > 0){
+    askConfirm("Reset timer?","Sesi yang belum di-check-out tidak akan dicatat.", ()=>resetTimer(false));
+  } else {
+    resetTimer(false);
+  }
 };
+$("#checkout").onclick = ()=>{
+  if(mode !== "focus"){ toast("Check-out hanya saat mode fokus"); return; }
+  if(sessionSeconds < 60){ toast("Minimal 1 menit untuk check-out"); return; }
+  const mins = Math.max(1, Math.round(sessionSeconds/60));
+  askConfirm("Check-out sesi?","Sesi " + mins + " menit akan disimpan ke riwayat dan statistik fokus.", ()=>{
+    clearInterval(tick); tick=null;
+    const m = logFocus(sessionSeconds/60);
+    toast("Check-out · +" + m + " menit fokus");
+    resetTimer(true);
+    render();
+  });
+};
+$("#pickTask").onclick = ()=>openSheet("picktask");
 paint();
+paintFocusTask();
 
 /* ============ init ============ */
 render();
