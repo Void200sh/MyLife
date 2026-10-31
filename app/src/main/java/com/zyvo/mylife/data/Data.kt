@@ -467,7 +467,7 @@ class AppStore(context: Context) {
         save()
     }
 
-    fun setBudget(value: Double) {
+    fun updateBudget(value: Double) {
         budget = value.coerceAtLeast(0.0)
         save()
     }
@@ -536,7 +536,7 @@ class AppStore(context: Context) {
         save()
     }
 
-    fun setQuote(value: String) {
+    fun updateQuote(value: String) {
         quote = value.ifBlank { DEFAULT_QUOTE }
         save()
     }
