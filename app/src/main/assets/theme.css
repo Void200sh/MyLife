@@ -1,0 +1,218 @@
+/* ============================================================
+   MyLife — 5 theme system + full-screen app overrides
+   ============================================================ */
+
+:root{
+  --font:"Plus Jakarta Sans",-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-display:"Plus Jakarta Sans",-apple-system,"Segoe UI",Roboto,sans-serif;
+  --cream:#FDF7EF; --cream-2:#F7EFE3; --card:#FFFFFF;
+  --ink:#22201C; --ink-2:#8C8579; --line:#EDE4D6;
+  --sage:#5E8B6A; --sage-deep:#3F6650; --sage-soft:#E7F0E7;
+  --amber:#E8A13C; --amber-soft:#FBEFDA;
+  --blue:#5B7FA6; --blue-soft:#E8EFF7;
+  --red:#D9665B; --red-soft:#FBE9E6;
+  --purple:#9B7BB8; --purple-soft:#F3EBFA;
+  --radius:22px;
+  --hero-a:#6E9B78; --hero-b:#4C7358; --hero-c:#3E5F49;
+  --hero-shadow:rgba(76,115,88,.28);
+  --bar-a:#7FA98B; --bar-b:#5E8B6A;
+  --done-bg:#FAFCF8; --done-line:#DFEBDF;
+  --check:#DDD3C3; --more:#C9BFAC; --tab-off:#B3AA9A;
+  --quote-text:#5A5348; --quote-line:#E2D6C2;
+  --on-ink:#FFFFFF; --empty-bg:rgba(255,255,255,.5);
+  --high-fg:#B14A40; --mid-fg:#9A6A1D; --study-fg:#7A5B9E;
+  --overlay:rgba(30,26,20,.45); --grab:#DCD2C1;
+}
+
+html[data-theme="chrome"]{
+  --font:"Plus Jakarta Sans",-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-display:"Space Grotesk","Plus Jakarta Sans",sans-serif;
+  --cream:#08090C; --cream-2:#101217; --card:#111318;
+  --ink:#F1F3F7; --ink-2:#7C8290; --line:#24262E;
+  --sage:#4D8DFF; --sage-deep:#8FB6FF; --sage-soft:#14213A;
+  --amber:#E8A13C; --amber-soft:#2A2312;
+  --blue:#7FA9FF; --blue-soft:#16233A;
+  --red:#FF6B5E; --red-soft:#2C1715;
+  --purple:#B79BE0; --purple-soft:#241C33;
+  --radius:16px;
+  --hero-a:#243A5E; --hero-b:#152238; --hero-c:#0B111C;
+  --hero-shadow:rgba(0,0,0,.55);
+  --bar-a:#6FA3FF; --bar-b:#4D8DFF;
+  --done-bg:#0D1524; --done-line:#20304C;
+  --check:#343843; --more:#4E5460; --tab-off:#4E5460;
+  --quote-text:#AEB6C4; --quote-line:#2A2E38;
+  --on-ink:#0A0C10; --empty-bg:rgba(255,255,255,.03);
+  --high-fg:#FF8A80; --mid-fg:#E8B563; --study-fg:#B79BE0;
+  --overlay:rgba(0,0,0,.62); --grab:#2A2E38;
+}
+
+html[data-theme="paper"]{
+  --font:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-display:"Fraunces",Georgia,serif;
+  --cream:#F2EDE3; --cream-2:#E9E1D3; --card:#FBF7EF;
+  --ink:#23201A; --ink-2:#8A8377; --line:#D9D1C3;
+  --sage:#A64B2A; --sage-deep:#7E3720; --sage-soft:#F0E2DA;
+  --amber:#C08A3E; --amber-soft:#F4E9D6;
+  --blue:#6E8195; --blue-soft:#E6EAEC;
+  --red:#B44B3F; --red-soft:#F3E0DA;
+  --purple:#8C7395; --purple-soft:#EEE7F0;
+  --radius:14px;
+  --hero-a:#B85B36; --hero-b:#94401F; --hero-c:#6E2E14;
+  --hero-shadow:rgba(110,46,20,.22);
+  --bar-a:#C27A55; --bar-b:#A64B2A;
+  --done-bg:#F6EFE3; --done-line:#DCCDB8;
+  --check:#C9BBAA; --more:#A39A8B; --tab-off:#A39A8B;
+  --quote-text:#5C5346; --quote-line:#D6C9B5;
+  --on-ink:#F7F2E8; --empty-bg:rgba(255,255,255,.45);
+  --high-fg:#9E3D33; --mid-fg:#8A6220; --study-fg:#7A5F84;
+  --overlay:rgba(40,34,24,.4); --grab:#D6C9B5;
+}
+
+html[data-theme="tactical"]{
+  --font:"Barlow Condensed",-apple-system,sans-serif;
+  --font-display:"Black Ops One",Impact,sans-serif;
+  --cream:#0C0E0A; --cream-2:#131710; --card:#141812;
+  --ink:#E6E8DF; --ink-2:#8C9284; --line:#283024;
+  --sage:#FFB000; --sage-deep:#FFC94D; --sage-soft:#2A2310;
+  --amber:#FFB000; --amber-soft:#2A2310;
+  --blue:#9CAF88; --blue-soft:#1B2117;
+  --red:#E0604E; --red-soft:#2A1512;
+  --purple:#A9A18C; --purple-soft:#211F18;
+  --radius:6px;
+  --hero-a:#232E1B; --hero-b:#161D12; --hero-c:#0B0F08;
+  --hero-shadow:rgba(0,0,0,.5);
+  --bar-a:#FFC94D; --bar-b:#FFB000;
+  --done-bg:#12160D; --done-line:#333C28;
+  --check:#3A4233; --more:#5C6355; --tab-off:#5C6355;
+  --quote-text:#AEB5A4; --quote-line:#2E3528;
+  --on-ink:#0C0E0A; --empty-bg:rgba(255,255,255,.02);
+  --high-fg:#E0604E; --mid-fg:#FFB000; --study-fg:#A9A18C;
+  --overlay:rgba(0,0,0,.62); --grab:#2E3528;
+}
+
+html[data-theme="porcelain"]{
+  --font:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-display:"Space Grotesk","Inter",sans-serif;
+  --cream:#ECEDE8; --cream-2:#E3E4DD; --card:#F7F7F3;
+  --ink:#24272B; --ink-2:#7C8186; --line:#D8DAD3;
+  --sage:#5E7285; --sage-deep:#46586A; --sage-soft:#E3E7E9;
+  --amber:#B08A4F; --amber-soft:#EFE7D9;
+  --blue:#5E7285; --blue-soft:#E3E7E9;
+  --red:#B85C51; --red-soft:#F0E2DF;
+  --purple:#8A7F94; --purple-soft:#ECE8EE;
+  --radius:14px;
+  --hero-a:#6B8093; --hero-b:#526577; --hero-c:#3E4F5E;
+  --hero-shadow:rgba(62,79,94,.22);
+  --bar-a:#7C92A4; --bar-b:#5E7285;
+  --done-bg:#F2F4F0; --done-line:#D2D7D0;
+  --check:#C9CCC5; --more:#A3A8A2; --tab-off:#9BA0A4;
+  --quote-text:#5A6066; --quote-line:#CFD2CB;
+  --on-ink:#F4F6F4; --empty-bg:rgba(255,255,255,.6);
+  --high-fg:#A44C42; --mid-fg:#8A6A32; --study-fg:#7C7186;
+  --overlay:rgba(28,32,34,.42); --grab:#CFD2CB;
+}
+
+/* ---------- full-screen app shell ---------- */
+body{
+  background:var(--cream);color:var(--ink);
+  background-image:none;padding:0;margin:0;
+  min-height:100dvh;display:block;
+  font-family:var(--font);
+  transition:background-color .25s ease,color .25s ease;
+}
+.phone{
+  width:100%;height:100dvh;border-radius:0;background:var(--cream);
+  padding:0;box-shadow:none;
+}
+.screen{
+  width:100%;height:100dvh;border-radius:0;background:var(--cream);
+}
+.status{display:none}
+.scroll{padding:20px 22px 110px}
+.nav{background:linear-gradient(to top,var(--cream) 62%,transparent)}
+.overlay{border-radius:0;background:var(--overlay)}
+.sheet{background:var(--cream);padding-bottom:calc(26px + env(safe-area-inset-bottom))}
+
+/* ---------- tokenized colors ---------- */
+.hero{
+  background:linear-gradient(140deg,var(--hero-a) 0%,var(--hero-b) 55%,var(--hero-c) 100%);
+  box-shadow:0 14px 28px var(--hero-shadow);
+}
+.balance{
+  background:linear-gradient(140deg,var(--hero-a),var(--hero-c));
+  box-shadow:0 14px 28px var(--hero-shadow);
+}
+.habit.done,.task.done{background:var(--done-bg);border-color:var(--done-line)}
+.mood.active{background:var(--cream-2)}
+.check,.task .box{border-color:var(--check)}
+.more{color:var(--more)}
+.bar.on i{background:linear-gradient(180deg,var(--bar-a),var(--bar-b))}
+.tab{color:var(--tab-off)}
+.tab svg{stroke:var(--tab-off)}
+.quote{border-color:var(--quote-line)}
+.quote p{color:var(--quote-text)}
+.empty{background:var(--empty-bg)}
+.grabber{background:var(--grab)}
+.inp,.pick{background:var(--card)}
+.dotpick.on{box-shadow:0 0 0 2px var(--card) inset}
+.tag.high,.btn.danger{color:var(--high-fg)}
+.tag.mid{color:var(--mid-fg)}
+.tag.study{color:var(--study-fg)}
+.tag.low{color:var(--sage-deep)}
+.toast{color:var(--on-ink)}
+.ring circle:first-child{stroke:var(--line)}
+#prog{stroke:var(--sage)}
+.btn.primary{background:var(--sage);color:#fff}
+html[data-theme="tactical"] .btn.primary,
+html[data-theme="tactical"] .chip.on,
+html[data-theme="tactical"] .day.on i{color:#0C0E0A}
+
+/* ---------- display typography per theme ---------- */
+.greet h1,.pagetop h1,.sheet h3,.hero .num,.balance .amount{font-family:var(--font-display)}
+html[data-theme="paper"] .greet h1,
+html[data-theme="paper"] .pagetop h1,
+html[data-theme="paper"] .sheet h3,
+html[data-theme="paper"] .hero .num,
+html[data-theme="paper"] .balance .amount{font-weight:500;letter-spacing:0}
+html[data-theme="tactical"] .greet h1,
+html[data-theme="tactical"] .pagetop h1,
+html[data-theme="tactical"] .sheet h3{text-transform:uppercase;letter-spacing:.02em;font-size:22px}
+html[data-theme="tactical"] .hero .num{font-size:38px;letter-spacing:.02em}
+html[data-theme="chrome"] .greet h1,
+html[data-theme="chrome"] .pagetop h1,
+html[data-theme="chrome"] .hero .num,
+html[data-theme="chrome"] .balance .amount,
+html[data-theme="porcelain"] .greet h1,
+html[data-theme="porcelain"] .pagetop h1,
+html[data-theme="porcelain"] .hero .num,
+html[data-theme="porcelain"] .balance .amount{letter-spacing:-.02em;font-weight:700}
+
+/* ---------- theme picker ---------- */
+.avatar{border:0;cursor:pointer;font-family:inherit;font-size:20px}
+.themegrid{display:flex;flex-direction:column;gap:9px}
+.themecard{
+  display:flex;align-items:center;gap:12px;background:var(--card);
+  border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;
+  cursor:pointer;margin-bottom:10px;transition:border-color .2s,box-shadow .2s;
+}
+.themegrid .themecard{margin-bottom:0}
+.themecard.on{border-color:var(--sage);box-shadow:0 0 0 3px var(--sage-soft)}
+.themecard .sw{
+  display:flex;width:54px;height:36px;border-radius:10px;overflow:hidden;
+  border:1px solid var(--line);flex:0 0 54px;
+}
+.themecard .sw i{flex:1;display:block}
+.themecard .grow{flex:1;min-width:0}
+.themecard b{display:block;font-size:13.5px;font-weight:700;color:var(--ink)}
+.themecard small{display:block;font-size:11px;font-weight:500;color:var(--ink-2);margin-top:2px}
+.themecard .cur{
+  display:none;font-size:9.5px;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--sage);
+}
+.themecard.on .cur{display:block}
+.themecard .chev{font-size:20px;font-weight:700;color:var(--ink-2);line-height:1}
+
+/* subtle scrollbar + tap feedback */
+.page.active{animation:fade .22s ease}
+button{font-family:inherit}
+input,button{outline:none}
